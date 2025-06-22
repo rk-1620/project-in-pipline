@@ -1,0 +1,49 @@
+run this command in powershell with admin permissions in that directory in you want to 
+generate the tree like structure of you files and folders excluding the unecessary 
+files like node modules.
+
+
+
+function Get-CustomTree {
+    param (
+        $path = ".",
+        $prefix = "",
+        $rootPath = (Get-Location).Path
+    )
+    
+    # Get all items (files and folders) except node_modules
+    $items = Get-ChildItem $path | 
+             Where-Object { $_.FullName -notlike "*\node_modules*" } |
+             Sort-Object Name
+
+    $count = $items.Count
+    $i = 0
+    
+    foreach ($item in $items) {
+        $i++
+        
+        # Determine tree characters
+        if ($i -eq $count) {
+            $treeChar = "└── "
+            $nextPrefix = $prefix + "    "
+        } else {
+            $treeChar = "├── "
+            $nextPrefix = $prefix + "│   "
+        }
+        
+        # Calculate relative path
+        $relativePath = $item.FullName.Substring($rootPath.Length + 1)
+        
+        # Output the item
+        $prefix + $treeChar + $item.Name
+        
+        # Recurse for directories
+        if ($item.PSIsContainer) {
+            Get-CustomTree -path $item.FullName -prefix $nextPrefix -rootPath $rootPath
+        }
+    }
+}
+
+# Generate and save the tree
+Get-CustomTree | Out-File -FilePath "project_structure.txt" -Encoding utf8
+Write-Host "Tree structure saved to project_structure.txt"
