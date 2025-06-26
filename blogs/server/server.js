@@ -9,6 +9,9 @@ import admin from 'firebase-admin';
 import serviceAccountKey from "./react-blogs-website-1beb2-firebase-adminsdk-fbsvc-a3b6331a0c.json" with { type: "json" };
 import { getAuth } from 'firebase-admin/auth';
 import User from "./Schema/User.js";
+import aws from "aws-sdk"
+import Blog from './Schema/Blog.js'
+
 
 const server = express();
 const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -31,6 +34,48 @@ mongoose.connect(process.env.mongoUri, { autoIndex: true })
     process.exit(1);
   });
 
+// setting the s3 bucket
+const s3 = new aws.S3({
+  region:'ap-south-1',
+  accessKeyId:process.env.AWS_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+
+})
+
+const verifyJWT = (req, res, next)=>{
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+
+
+  if(token == null)
+  {
+    return res.status(401).json({error: "No access Token"});
+  }
+
+  jwt.verify(token, process.env.SECRET_ACCESS_KEY, (err, user)=>{
+    if(err)
+    {
+      return res.status(403).json({error: "Access Token in invalid"})
+    }
+
+    req.user = user.id;
+
+    next();
+  } )
+}
+
+const generateUploadUrl = async ()=>{
+  const date = new Date();
+  const imageName = `${nanoid()}-${date.getTime()}.jpg`;
+
+  return await s3.getSignedUrlPromise('putObject', {
+    Bucket: 'blogs-website-image-holder',
+    Key:imageName,
+    Expires: 1000,
+    ContentType:"image/jpg"
+  })
+}
+
 const formatDatatoSend = (user) => {
   const access_token = jwt.sign({ id: user._id }, process.env.SECRET_ACCESS_KEY);
   return {
@@ -46,6 +91,16 @@ const generateUsername = async (email) => {
   const isUsernameNotUnique = await User.exists({ "personal_info.username": username });
   return isUsernameNotUnique ? username + nanoid().substring(0, 5) : username;
 };
+
+
+//route of a upload image url
+server.get("/get-upload-url",(req,res)=>{
+  generateUploadUrl().then(url=> res.status(200).json({uploadUrl:url}))
+  .catch(err=>{
+    console.log(err.message);
+    return res.status(500).json({error:err.message})
+  })
+})
 
 // Routes
 server.post("/signup", (req, res) => {
@@ -145,6 +200,71 @@ server.post("/google-auth", async (req, res) => {
     return res.status(500).json({ "error": err.message });
   }
 });
+
+server.post("/create-blog", verifyJWT,(req, res)=>{
+
+  let  authorId = req.user;
+  let { title, des, banner, tags, content, draft} = req.body;
+
+  console.log(req.body)
+  
+  if(!title.length){
+    return res.status(403).json({error: "You must provide a title"});
+  }
+
+  if(!draft)
+  {
+    if(!des.length || des.length > 200)
+    {
+      return res.status(403).json({error:"You must provide a blog description to publish the blog"});
+    }
+
+    if(!banner.length)
+    {
+      return res.status(403).json({error:"You must provide a blog banner to publish the blog"});
+    }
+
+    if(!content.blocks.length)
+    {
+      return res.status(403).json({error:"You must provide a blog content to publish the blog"});
+    }
+
+    if(!tags.length || tags.length > 10)
+    {
+      return res.status(403).json({error:"provide a blog tags to publish the blog"});
+    }
+  }
+
+
+  tags = tags.map(tag=> tag.toLowerCase());
+
+  let blog_id = title.replace(/[^a-zA-Z0-9]/g, ' ').replace(/\s+/g, "-").trim() + nanoid();
+
+  let blog = new Blog({
+    title, des, banner, content, tags, author: authorId, blog_id, draft: Boolean(draft)
+  })
+
+  blog.save().then(blog => {
+    
+    let increamentVal = draft ? 0 : 1 ;
+
+    User.findOneAndUpdate({_id: authorId}, {$inc : {"account_info.total_posts": increamentVal}, $push: {"blogs": blog._id}})
+    .then(user=>{
+      return res.status(200).json({id: blog.blog_id})
+    })
+    .catch(err =>{
+      return res.status(500).json({error: "Failed to update total posts number"})
+    })
+
+  })
+  .catch(err =>{
+      return res.status(500).json({error: err.message})
+    })
+  // console.log(blogId);
+  // return res.json({status:'done'});
+  
+})
+
 
 server.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
