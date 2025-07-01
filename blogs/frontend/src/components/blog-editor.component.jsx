@@ -1,3 +1,5 @@
+// blog-editor.component.jsx
+
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../imgs/logo.png"
 import Animationwrapper from "../common/page-animation";
@@ -19,18 +21,29 @@ const BlogEditor = ()=>{
     let {userAuth:{access_token}} = useContext(UserContext);
     let navigate = useNavigate();
 
-    useEffect(()=>{
-        if(!textEditor.isReady)
-        {
+   useEffect(() => {
+    let editorInstance;
 
-            setTextEditor(new EditorJs({
-                holderId:"textEditor",
-                data: content,
-                tools: tools,
-                placeholder: "Let's write an awesome blog"
-            }))
+    if (!textEditor.isReady) {
+        editorInstance = new EditorJs({
+            holder: "textEditor",  // Changed from holderId to holder (correct EditorJS config)
+            data: content,   // Load current content
+            tools: tools,
+            placeholder: "Let's write an awesome blog"
+        });
+
+        editorInstance.isReady.then(() => {
+            setTextEditor(editorInstance);
+        });
+    }
+
+    return () => {
+        // Cleanup to allow reinitialization
+        if (editorInstance && editorInstance.destroy) {
+            editorInstance.destroy();
         }
-    },[0])
+    };
+}, [blog.content]); // Re-run when content changes
 
     const handleBannerUpload = (e)=>{
         let img = e.target.files[0];
@@ -88,7 +101,7 @@ const BlogEditor = ()=>{
         {
             return toast.error("upload  a blog title to publish");
         }
-
+        console.log("istexteditor is ready", textEditor.isReady)
         if(textEditor.isReady)
         {
             textEditor.save().then(data =>{
@@ -198,7 +211,7 @@ const BlogEditor = ()=>{
                                     
                                     type="file"
                                     accecpt=".png, .jpg, .jpeg"
-                                    hidden
+                                    // hidden
 
                                     onChange={handleBannerUpload}
                                 >
