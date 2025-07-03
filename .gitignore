@@ -15,6 +15,6 @@ dist-ssr
 *.sw?
 .env
 config.js
-blogPost
+
 checkmate
 payments-system

@@ -1,0 +1,29 @@
+/* src/styles/reactions.css */
+.reaction-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .reaction-buttons button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: all 0.2s;
+  }
+  
+  .reaction-buttons button:hover {
+    opacity: 0.8;
+  }
+  
+  .reaction-buttons button.active {
+    color: var(--primary-color);
+    font-weight: bold;
+  }
+  
+  .reaction-buttons button.active:hover {
+    opacity: 1;
+  }

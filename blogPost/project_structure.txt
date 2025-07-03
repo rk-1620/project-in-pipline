@@ -1,0 +1,147 @@
+﻿this is inside the blogPost 
+
+├── backend
+│   ├── .env
+│   ├── app.js
+│   ├── config
+│   │   └── db.js
+│   ├── controllers
+│   │   ├── adminController.js
+│   │   ├── authController.js
+│   │   ├── blogController.js
+│   │   ├── commentController.js
+│   │   ├── healthController.js
+│   │   └── userController.js
+│   ├── logs
+│   │   ├── requests.log
+│   │   └── server.log
+│   ├── middleware
+│   │   ├── adminMidleware.js
+│   │   ├── authMiddleware.js
+│   │   ├── errorMiddleware.js
+│   │   └── validateRequest.js
+│   ├── models
+│   │   ├── Admin.js
+│   │   ├── blog.js
+│   │   ├── Comment.js
+│   │   ├── Posts.js
+│   │   └── User.js
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── routes
+│   │   ├── adminRoutes.js
+│   │   ├── authRoutes.js
+│   │   ├── blogRoutes.js
+│   │   ├── commentRoutes.js
+│   │   ├── dbCheck.js
+│   │   ├── healthRoutes.js
+│   │   ├── index.js
+│   │   └── userRoutes.js
+│   ├── server.js
+│   ├── services
+│   │   ├── adminService.js
+│   │   ├── blogService.js
+│   │   ├── commentService.js
+│   │   ├── healthService.js
+│   │   └── userService.js
+│   ├── uploads
+│   ├── utils
+│   │   └── ApiErrors.js
+│   └── validators
+│       ├── adminValidator.js
+│       ├── blogValidator.js
+│       ├── commentValidator.js
+│       └── userValidator.js
+├── frontend
+│   ├── .gitignore
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── public
+│   │   ├── assets
+│   │   └── vite.svg
+│   ├── README.md
+│   ├── src
+│   │   ├── .env
+│   │   ├── api.jsx
+│   │   ├── App.css
+│   │   ├── App.jsx
+│   │   ├── components
+│   │   │   ├── admin
+│   │   │   │   ├── AdminNavbar.jsx
+│   │   │   │   └── AdminSidebar.jsx
+│   │   │   ├── auth
+│   │   │   │   ├── AuthLayout.jsx
+│   │   │   │   ├── LoginForm.jsx
+│   │   │   │   ├── PrivateRoute.jsx
+│   │   │   │   └── RegisterForm.jsx
+│   │   │   ├── blog
+│   │   │   │   ├── BlogCard.jsx
+│   │   │   │   ├── FeatureCard.jsx
+│   │   │   │   └── ReactionButtons.jsx
+│   │   │   ├── common
+│   │   │   │   ├── AppBar.jsx
+│   │   │   │   └── Footer.jsx
+│   │   │   └── layout
+│   │   │       ├── AdminLayout.jsx
+│   │   │       └── MainLayout.jsx
+│   │   ├── context
+│   │   │   └── AuthContext.jsx
+│   │   ├── hooks
+│   │   │   ├── useAuth.jsx
+│   │   │   ├── useBlogs.jsx
+│   │   │   └── useUser.jsx
+│   │   ├── index.css
+│   │   ├── main.jsx
+│   │   ├── pages
+│   │   │   ├── admin
+│   │   │   │   ├── adminDashboard.jsx
+│   │   │   │   ├── AdminLogin.jsx
+│   │   │   │   ├── BlogManagement.jsx
+│   │   │   │   └── UserManagement.jsx
+│   │   │   ├── auth
+│   │   │   │   ├── ForgotPasswordPage.jsx
+│   │   │   │   ├── LoginPage.jsx
+│   │   │   │   ├── RegisterPage.jsx
+│   │   │   │   └── ResetPasswordPage.jsx
+│   │   │   ├── blog
+│   │   │   │   ├── BlogCreate.jsx
+│   │   │   │   ├── BlogDetailPage.jsx
+│   │   │   │   ├── BlogFeed.jsx
+│   │   │   │   ├── BlogForm.jsx
+│   │   │   │   └── BlogList.jsx
+│   │   │   ├── dashboard
+│   │   │   │   ├── CreateBlogPage.jsx
+│   │   │   │   ├── Dashboard.jsx
+│   │   │   │   ├── EditBlogPage.jsx
+│   │   │   │   └── UserBlogs.jsx
+│   │   │   ├── errors
+│   │   │   │   └── NotFoundPage.jsx
+│   │   │   ├── home
+│   │   │   │   └── HomePage.jsx
+│   │   │   ├── profile
+│   │   │   │   └── userDetail.jsx
+│   │   │   └── user
+│   │   │       └── userName.jsx
+│   │   ├── routes
+│   │   ├── services
+│   │   │   ├── admin
+│   │   │   ├── adminService.js
+│   │   │   ├── api.js
+│   │   │   ├── auth
+│   │   │   ├── authService.js
+│   │   │   ├── blog
+│   │   │   ├── blogService.js
+│   │   │   ├── commentService.js
+│   │   │   ├── health
+│   │   │   ├── http
+│   │   │   ├── token
+│   │   │   ├── user
+│   │   │   └── userService.js
+│   │   ├── store
+│   │   ├── styles
+│   │   │   └── reactions.css
+│   │   └── utils
+│   └── vite.config.js
+└── project_structure.txt
