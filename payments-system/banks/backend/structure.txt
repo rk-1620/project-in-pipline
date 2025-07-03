@@ -1,0 +1,37 @@
+
+banks
+│    backend/
+│    ├── config/
+│    │   └── db.js
+│    ├── controllers/
+│    │   ├── accountControllers.js
+│    │   ├── bankControllers.js
+│    │   ├── transactionControllers.js
+│    │   ├── employeeControllers.js
+│    │   └── userControllers.js
+│    ├── middleware/
+│    │   ├── adminAuth.js
+│    │   ├── bankAuth.js
+│    │   ├── employeeAuth.js
+│    │   └── userAuth.js
+│    ├── models/
+│    │   ├── Accounts.js
+│    │   ├── Bank.js
+│    │   ├── Transaction.js
+│    │   ├── User.js
+│    │   ├── Admins.js
+│    │   └── Employee.js
+│    ├── routes/
+│    │   ├── accountRoutes.js
+│    │   ├── adminRoutes.js
+│    │   ├── bankRoutes.js
+│    │   ├── employeeRoutes.js
+│    │   ├── transactionRoutes.js
+│    │   └── userRoutes.js
+│    ├── utils/
+│    │   ├── generateAccountNo.js
+│    │   └── userRoutes.js
+│    ├── app.js
+│    ├── server.js
+│    ├── .env
+│    └── package.json
