@@ -1,6 +1,6 @@
 // blog-editor.component.jsx
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import logo from "../imgs/logo.png"
 import Animationwrapper from "../common/page-animation";
 import defaultBanner from '../imgs/blog banner.png'
@@ -14,12 +14,15 @@ import EditorJs from "@editorjs/editorjs"
 import { tools } from "./tools.component";
 import { UserContext } from "../App";
 import axios from "axios";
+
+
 const BlogEditor = ()=>{
 
     // let blogBannerRef = useRef();
     let { blog, blog: {title,  banner, content, tags, des}, setBlog, textEditor, setTextEditor, setEditorState} = useContext(EditorContext)
     let {userAuth:{access_token}} = useContext(UserContext);
     let navigate = useNavigate();
+    let {blog_id} = useParams();
 
    useEffect(() => {
     let editorInstance;
@@ -27,7 +30,7 @@ const BlogEditor = ()=>{
     if (!textEditor.isReady) {
         editorInstance = new EditorJs({
             holder: "textEditor",  // Changed from holderId to holder (correct EditorJS config)
-            data: content,   // Load current content
+            data: Array.isArray(content) ? content[0] : content,   // Load current content
             tools: tools,
             placeholder: "Let's write an awesome blog"
         });
@@ -94,12 +97,12 @@ const BlogEditor = ()=>{
     const handlePublishEvent = ()=>{
         if(!banner.length)
         {
-            return toast.error("upload  a blog banner to publish");
+            return toast.error("upload a blog banner to publish");
         }
 
         if(!title.length)
         {
-            return toast.error("upload  a blog title to publish");
+            return toast.error("upload a blog title to publish");
         }
         console.log("istexteditor is ready", textEditor.isReady)
         if(textEditor.isReady)
@@ -145,7 +148,7 @@ const BlogEditor = ()=>{
                     title, banner, des, tags, content, draft: true 
                 }
 
-                axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/create-blog", blogObj, {
+                axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/create-blog", {...blogObj, id:blog_id}, {
             headers:{
                 'Authorization': `Bearer ${access_token}`
             }
@@ -211,7 +214,7 @@ const BlogEditor = ()=>{
                                     
                                     type="file"
                                     accecpt=".png, .jpg, .jpeg"
-                                    // hidden
+                                    hidden
 
                                     onChange={handleBannerUpload}
                                 >

@@ -40,7 +40,7 @@ const UserAuthForm = ({type })=>{
         //Form Data
         let form = new FormData(formElement);
         let formData = {};
-        console.log(form);
+        // console.log(form);
         for(let [key,value] of form.entries())
         {
             formData[key] = value;
@@ -61,13 +61,13 @@ const UserAuthForm = ({type })=>{
         {
             return toast.error("email is required")
         }
-        console.log("Password being validated:", email);
+        // console.log("Password being validated:", email);
         if(!emailRegex.test(email))
         {
             return toast.error("invalid email")
         }
 
-        console.log("Password being validated:", password);
+        // console.log("Password being validated:", password);
         if(!passwordRegex.test(password))
         {
             return toast.error("password should 6 to 20 characters long with 1 numeric, 1 lowercase and 1 uppercase")

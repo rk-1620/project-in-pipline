@@ -22,7 +22,7 @@ const SearchPage = ()=>{
 
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/search-blogs", {query, page})
         .then( async ({data})=>{
-            console.log(data.blogs);
+            // console.log(data.blogs);
             let formateData = await filterPaginationData({
                 state:blogs,
                 data: data.blogs,

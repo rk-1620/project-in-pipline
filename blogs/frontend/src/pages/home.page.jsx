@@ -21,7 +21,7 @@ const HomePage = ()=>{
     const fetchLatestBlogs = ({page = 1}) =>{
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/latest-blogs", {page})
         .then( async ({data})=>{
-            console.log(data.blogs);
+            // console.log(data.blogs);
             let formateData = await filterPaginationData({
                 state:blogs,
                 data: data.blogs,
@@ -30,7 +30,7 @@ const HomePage = ()=>{
             });
             // setBlogs(data.blogs);
             setBlogs(formateData);
-            console.log(formateData)
+            // console.log(formateData)
         })
         .catch(err=>{
             console.log(err);
@@ -50,7 +50,7 @@ const HomePage = ()=>{
     const fetchBlogsByCategory = ({page = 1}) => {
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/search-blogs", {tag:pageState, page})
         .then( async ({data})=>{
-            console.log(data.blogs);
+            // console.log(data.blogs);
             let formateData = await filterPaginationData({
                 state:blogs,
                 data: data.blogs,
