@@ -13,7 +13,7 @@ import aws from "aws-sdk"
 import Blog from './Schema/Blog.js'
 import Notification from './Schema/Notification.js'
 import Comment from './Schema/Comment.js';
-import { populate } from 'dotenv';
+// import { populate } from 'dotenv';
 // import { use } from 'react';
 
 const server = express();

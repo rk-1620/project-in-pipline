@@ -98,7 +98,7 @@ const Authform = ({type})=>{
 
            <section className="h-cover flex items-center justify-center">
             <Toaster/>
-                <form id = "formElement" className=" w-[80%] max-w-[400px]">
+                <form id = "formElement" className="w-[90%] max-w-[400px] p-4 sm:p-8 bg-white rounded-lg shadow-md">
                     <h1 className="text-4xl capitalize text-center mb-24">
                         {type == "sign-in" ? "Welcome Back":"Join Us Today"}
                     </h1>
@@ -126,7 +126,7 @@ const Authform = ({type})=>{
                             icon="key"
                     />
                     <div className="flex items-center justify-center">
-                        <button className="w-24 sm:w-32 text-center px-3 py-2 bg-black text-white rounded-full text-xs sm:text-base capitalize hover:bg-opacity-80 "
+                        <button className="w-65 px-4 py-2 bg-black text-white rounded-full capitalize hover:opacity-80 hover: hover:text-white hover:border hover:border-black shadow-md hover:shadow-lg hover:cursor-pointer"
                                 type="submit"
                                 onClick={handleSubmit}    
                         >
@@ -139,7 +139,7 @@ const Authform = ({type})=>{
                         <p>or</p>
                         <hr className="w-1/2 border-black"/>
                     </div>
-                    <button className="flex items-center justify-center gap-4 w-[90%] w-24 sm:w-32 text-center px-3 py-2 bg-black text-white rounded-full text-xs sm:text-base capitalize hover:bg-opacity-80 center"
+                    <button className="flex items-center justify-center gap-3 w-full px-4 py-2 bg-black text-white rounded-full text-sm sm:text-base capitalize transition-all duration-300 ease-in-out hover:bg-white hover:text-black hover:border hover:border-black shadow-md hover:shadow-lg hover:cursor-pointer"
                     onClick={handleGoogleAuth}
                     >
                         <Icons.google/>

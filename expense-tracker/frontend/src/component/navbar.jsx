@@ -26,50 +26,50 @@ const Navbar = () => {
     <>
     
     
-    <div className="relative flex items-center justify-between p-3 rounded-full bg-white m-2 shadow-md">
-      
+        <div className="relative flex items-center justify-between px-4 py-3 sm:px-6 rounded-full bg-white m-2 shadow-md">
 
-      <Link to="/" className="w-10 sm:w-14 flex-none">
-        <img className="h-8 sm:h-10" src={logo} alt="Logo" />
-      </Link>
+        {/* Logo */}
+        <Link to="/homepage" className="w-10 sm:w-14 flex-none hover:scale-105 transition-transform duration-200">
+          <img className="h-8 sm:h-10" src={logo} alt="Logo" />
+        </Link>
 
+        {/* Title Centered */}
+        <p className="absolute left-4/9 transform -translate-x-1/2 text-sm sm:text-base font-semibold text-gray-700 whitespace-nowrap">
+          Expense Tracker
+        </p>
 
-      <p className="absolute left-4/11 transform -translate-x-1/2 text-sm font-semibold whitespace-nowrap">
-        Expense Tracker
-      </p>
+        {/* Auth Buttons / Profile */}
+        {access_token ? (
+          <div className="relative" onClick={handleUserNavPanel} onBlur={handleBlur}>
+            <button className="w-10 h-10 sm:w-12 sm:h-12 focus:outline-none">
+              <img
+                src={profile_img}
+                alt="User Profile"
+                className="w-full h-full object-cover rounded-full border hover:shadow-md transition-shadow duration-200"
+              />
+            </button>
+            {userNavPanel && <UserNavigationPanel />}
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Link
+              to="/signup"
+              className="w-20 sm:w-28 px-3 py-2 text-center text-xs sm:text-sm border border-black rounded-full bg-white text-black hover:bg-black hover:text-white transition-all duration-300"
+            >
+              Sign Up
+            </Link>
+            <Link
+              to="/signin"
+              className="w-20 sm:w-28 px-3 py-2 text-center text-xs sm:text-sm rounded-full bg-black text-white hover:bg-white hover:text-black border border-black transition-all duration-300"
+            >
+              Sign In
+            </Link>
+          </div>
+        )}
+      </div>
 
+      <Outlet />
 
-      {access_token ? (
-        <div className="relative" onClick={handleUserNavPanel} onBlur={handleBlur}>
-          <button className="w-10 h-10 sm:w-12 sm:h-12">
-            <img
-              src={profile_img}
-              alt="User"
-              className="w-full h-full object-cover rounded-full border"
-            />
-          </button>
-
-          {userNavPanel && <UserNavigationPanel />}
-        </div>
-      ) : (
-        <div className="flex items-center gap-2 sm:gap-3">
-          <Link
-            to="/signup"
-            className="w-24 sm:w-32 text-center px-3 py-2 bg-white text-black border rounded-full text-xs sm:text-base capitalize hover:bg-opacity-80"
-          >
-            Sign Up
-          </Link>
-
-          <Link
-            to="/signin"
-            className="w-24 sm:w-32 text-center px-3 py-2 bg-black text-white rounded-full text-xs sm:text-base capitalize hover:bg-opacity-80"
-          >
-            Sign In
-          </Link>
-        </div>
-      )}
-    </div>
-    <Outlet />
     </>
   );
 };

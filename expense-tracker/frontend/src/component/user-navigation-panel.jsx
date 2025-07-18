@@ -15,25 +15,34 @@ const UserNavigationPanel = ()=>{
     }
 
     return(
-                <div className="bg-white absolute right-0 border w-60 w-60 duration-200" >
+                <div className="absolute right-0 w-60 bg-white border border-gray-200 rounded-md shadow-md duration-200">
 
-                    <Link to={`/user/${username}`} className="link pl-8 py-4">
-                        Profile
-                    </Link>
-                    <Link to="/dashboard/blogs" className="link pl-8 py-4">
-                        Dashboard
-                    </Link>
+                <Link to={`/user/${username}`} className="block pl-8 pr-4 py-4 hover:bg-gray-100">
+                    Profile
+                </Link>
+                <span className="block border-t border-gray-200 my-2"></span>
 
-                     <Link to="/settings/edit-profile" className="link pl-8 py-4">
-                        Settings
-                    </Link>
-                    <span className="absolute border-t border-grey w-[100%]"></span>
+                <Link to="/dashboard/blogs" className="block pl-8 pr-4 py-4 hover:bg-gray-100">
+                    Dashboard
+                </Link>
+                <span className="block border-t border-gray-200 my-2"></span>
 
-                    <button className="text-left p-4 hover:bggrey w-full pl-8 py-4" onClick={signOutUser}>
-                        <h1 className="font-bold text-xl mg-1">sign out</h1>
-                        <p className="text-dark-grey">@{username}</p>
-                    </button>
+                {/* <Link to="/settings/edit-profile" className="block pl-8 pr-4 py-4 hover:bg-gray-100">
+                    Settings
+                </Link>
+
+                <span className="block border-t border-gray-200 my-2"></span> */}
+
+                <button 
+                    onClick={signOutUser} 
+                    className="w-full text-left pl-8 pr-4 py-4 hover:bg-gray-100 focus:outline-none"
+                >
+                    <div className="font-semibold text-lg mb-1">Sign Out</div>
+                    <div className="text-sm text-gray-500">@{username}</div>
+                </button>
+
                 </div>
+
 
     )
 }

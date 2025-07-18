@@ -6,6 +6,14 @@ import { nanoid } from 'nanoid';
 import jwt from 'jsonwebtoken';
 import cors from 'cors';
 import User from './Schema/User.js';
+import { addExpense } from './controllers/addExpenseController.js';
+import { addCategory } from './controllers/addCategoryController.js';
+import { getUserCategories } from './controllers/user-categories.js';
+import { deleteCategory } from './controllers/deleteCategory.js';
+import { getCategoryExpenseDetails, getExpenseSummary } from './controllers/expenseController.js';
+import { reviseCategoryBudget } from './controllers/categoryController.js';
+import { getUserMonthlyBudget, reviseTotalBudget } from './controllers/bugetController.js';
+import { chartSummary } from './controllers/chartController.js';
 
 const server = express();
 const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -24,29 +32,29 @@ mongoose.connect(process.env.mongoUri, { autoIndex: true })
   });
 
 
-const verifyJWT = (req, res, next)=>{
+
+const verifyJWT = (req, res, next) => {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
 
-
-  if(token == null)
-  {
-    return res.status(401).json({error: "No access Token"});
+  if (!token) {
+    return res.status(401).json({ error: "No access token provided." });
   }
 
-  jwt.verify(token, process.env.SECRET_ACCESS_KEY, (err, user)=>{
-    if(err)
-    {
-      return res.status(403).json({error: "Access Token in invalid"})
+  jwt.verify(token, process.env.SECRET_ACCESS_KEY, (err, decodedUser) => {
+    if (err) {
+      return res.status(403).json({ error: "Invalid or expired access token." });
     }
 
-    req.user = user.id;
-
+    req.user = decodedUser;
+    console.log(req.user)  // 🔑 Store full decoded user payload
     next();
-  } )
-}
+  });
+};
+
 
 const formatDatatoSend = (user) => {
+    console.log("_ID", user._id)
   const access_token = jwt.sign({ id: user._id }, process.env.SECRET_ACCESS_KEY);
   return {
     access_token,
@@ -124,6 +132,45 @@ server.post("/signin", async (req, res) => {
     return res.status(500).json({ "error": err.message });
   }
 });
+
+// server.put("/api/budget/update-total", verifyJWT, addExpense);
+
+server.post("/api/categories/add", verifyJWT, addCategory)
+
+server.post("/api/expenses/add", verifyJWT, addExpense)
+
+server.delete("/api/categories/delete", verifyJWT, deleteCategory)
+
+server.get("/api/categories/user-categories", verifyJWT, getUserCategories)
+
+server.get("/api/expenses/summary", verifyJWT, getExpenseSummary)
+
+server.put("/api/categories/update-budget", verifyJWT, reviseCategoryBudget);
+
+server.put('/api/budget/update-total', verifyJWT, reviseTotalBudget);
+
+server.get('/api/budget/user-budget', verifyJWT, getUserMonthlyBudget);
+
+server.post('/api/expenses/category-detail', verifyJWT, getCategoryExpenseDetails);
+
+server.post('/api/expenses/chart-summary', verifyJWT, chartSummary)
+
+server.post("/get-profile", (req, res)=>{
+  
+  let {username} = req.body;
+  // console.log(username);
+
+  User.findOne({"personal_info.username": username })
+  .select("-personal_info.password -google_auth -updatedAt -blogs")
+  .then(user=>{
+    return res.status(200).json(user)
+  })
+  .catch(err=>{
+    console.log(err);
+    return res.status(500).json({error: err.message})
+  })
+
+})
 
 server.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
