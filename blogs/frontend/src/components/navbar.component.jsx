@@ -81,12 +81,13 @@ const Navbar = ()=>{
                     </>)
                     :
                    ( <>
-                        <Link to="/signin" className="btn-dark py-2" >
-                        Sign In
-                        </Link>
 
                         <Link to="/signup" className="btn-light py-2 hidden md:block">
                             Sign UP
+                        </Link>
+                        
+                        <Link to="/signin" className="btn-dark py-2" >
+                        Sign In
                         </Link>
                     </>)
                 }

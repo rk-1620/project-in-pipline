@@ -96,6 +96,7 @@ const UserAuthForm = ({type })=>{
         // console.log("user-googele = " + uu);
     }
 
+
     return(
         access_token ? <Navigate to = "/" /> 
         :

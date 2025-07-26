@@ -17,7 +17,7 @@ const HomePage = ()=>{
     let [trendingBlogs, setTrendingBlogs] = useState(null);
     let [pageState, setPageState] = useState("home");
 
-    let categories = ["programming", "hollywood", "habits", "tech", "finance"  ]
+    let categories = ["habits", "programming", "hollywood", "tech", "finance"  ]
     const fetchLatestBlogs = ({page = 1}) =>{
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/latest-blogs", {page})
         .then( async ({data})=>{
@@ -102,8 +102,7 @@ const HomePage = ()=>{
     return(
         <Animationwrapper>
             <section className="h-cover flex justify-center gap-10">
-                
-                
+                                
                 {/* for the latest blogs */}
                 <div className="w-full">
                     <InPageNavigation routes={[pageState, "Trending Blogs"]} defaultHidden={["Trending Blogs"]}>

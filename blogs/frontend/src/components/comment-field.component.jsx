@@ -28,69 +28,68 @@ const CommentField = ({action, index = undefined,  replyingTo = undefined, setRe
 
     const [comment, setComment ] = useState("");
 
-    const handleComment = () =>{
-        if(!access_token)
-        {
-            return toast.error("login required to comment");
-        }
+   const handleComment = () => {
+  if (!access_token) return toast.error("Login required to comment");
+  if (!comment.trim().length) return toast.error("Write something first");
 
-        if(!comment.length)
-        {
-            return toast.error("write Something in a comment First")
-        }
+  axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/add-comment`, 
+    { _id, blog_author, comment, replying_to: replyingTo }, 
+    { headers: { Authorization: `Bearer ${access_token}` } }
+  )
+  .then(({ data }) => {
+    setComment("");
 
-        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/add-comment", {
-            _id, blog_author, comment, replying_to: replyingTo
-        }, { 
-            headers:{
-                'Authorization': `Bearer ${access_token}`
-            }
-         })
-         .then(({data}) => {
+    const newComment = {
+      ...data,
+      commented_by: { personal_info: { username, profile_img, fullname } },
+      childrenLevel: replyingTo ? commentsArr[index].childrenLevel + 1 : 0,
+      children: [],
+      isReplyLoaded: false
+    };
 
-            console.log(data);
-            setComment("");
-            
-            data.commented_by = { personal_info: {username, profile_img, fullname} }
+    let updatedCommentsArr;
+    if (replyingTo) {
+      // Immutable parent update
+      const updatedParent = {
+        ...commentsArr[index],
+        children: [...commentsArr[index].children, data._id],
+        isReplyLoaded: true
+      };
 
-            let newcommentsArr;
+      updatedCommentsArr = [
+        ...commentsArr.slice(0, index),
+        updatedParent,
+        newComment,
+        ...commentsArr.slice(index + 1)
+      ];
 
-            if(replyingTo)
-            {
-                commentsArr[index].children.push(data._id);
-
-                data.childrenLevel = commentsArr[index].childrenLevel + 1;
-                data.parentIndex = index;
-
-                commentsArr[index].isReplyLoaded = true;
-
-                commentsArr.splice(index + 1, 0, data);
-
-                newcommentsArr = commentsArr;
-                // newcommentsArr = [...commentsArr];
-
-                setReplying(false);
-            }
-
-            else{
-                data.childrenLevel = 0;
-                newcommentsArr = [ data, ...commentsArr];
-            }
-
-            
-            let parentCommentIncrementalval = replyingTo ? 0 : 1;
-
-            setBlog({ ...blog, comments: {...comments, results: newcommentsArr}, activity: {...activity, total_comments: total_comments+1, total_parent_comments:total_parent_comments+ parentCommentIncrementalval }})
-
-            // setTotalParentCommentsLoaded(preVal => preVal + parentCommentIncrementalval);
-            
-
-         })
-         .catch(err =>{
-            console.log(err);
-         })
-
+      setReplying(false);
+    } else {
+      // New parent comment
+      updatedCommentsArr = [newComment, ...commentsArr];
     }
+
+    // Recalculate counts
+    const recalculatedTotalComments = updatedCommentsArr.length;
+    const recalculatedParentComments = updatedCommentsArr.filter(c => c.childrenLevel === 0).length;
+
+    setBlog({
+      ...blog,
+      comments: { ...comments, results: updatedCommentsArr },
+      activity: {
+        ...activity,
+        total_comments: recalculatedTotalComments,
+        total_parent_comments: recalculatedParentComments
+      }
+    });
+
+  })
+  .catch(err => {
+    console.log(err);
+    toast.error("Failed to post comment.");
+  });
+};
+
  
     return(
         <>

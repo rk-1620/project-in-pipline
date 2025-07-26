@@ -121,24 +121,72 @@ const CommentCard = ({index, leftVal, commentData})=>{
         }
     }
 
-    const deleteComment = (e) =>{
-        e.target.setAttribute("disabled", true);
+    const deleteComment = (e) => {
+  e.target.setAttribute("disabled", true);
 
-        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/delete-comment",{_id}, {
-            headers:{
-                'Authorization' : `Bearer ${access_token}`
-            }
-        })
-        .then(()=>{
-            // e.target.removeCommentsCard("disabled");
-            // removeCommentsCard(index + 1, true);
+  axios.post(`${import.meta.env.VITE_SERVER_DOMAIN}/delete-comment`, { _id }, {
+    headers: { Authorization: `Bearer ${access_token}` }
+  })
+  .then(() => {
+    const baseLevel = commentsArr[index]?.childrenLevel;
 
-            removeCommentsCard(index, true);
-        })
-        .catch(err=>{
-            console.log(err)
-        })
+    // Remove this comment and any children if parent
+    let newCommentsArr = [...commentsArr];
+    let removedCount = 1;
+
+    if (baseLevel === 0) {
+      let i = index + 1;
+      while (i < newCommentsArr.length && newCommentsArr[i].childrenLevel > 0) {
+        i++;
+        removedCount++;
+      }
+      newCommentsArr.splice(index, removedCount);
+    } else {
+      // It's a reply → update parent’s children array
+      const parentIndex = newCommentsArr.findIndex((c, idx) => idx < index && c.children.includes(_id));
+      if (parentIndex !== -1) {
+        const parentComment = newCommentsArr[parentIndex];
+        const updatedParent = {
+          ...parentComment,
+          children: parentComment.children.filter(cid => cid !== _id),
+          isReplyLoaded: parentComment.children.length > 1
+        };
+
+        newCommentsArr = [
+          ...newCommentsArr.slice(0, parentIndex),
+          updatedParent,
+          ...newCommentsArr.slice(parentIndex + 1, index),
+          ...newCommentsArr.slice(index + 1)
+        ];
+      } else {
+        newCommentsArr.splice(index, 1);
+      }
     }
+
+    // Recalculate counts safely
+    const recalculatedTotal = newCommentsArr.length;
+    const recalculatedParents = newCommentsArr.filter(c => c.childrenLevel === 0).length;
+
+    setBlog({
+      ...blog,
+      comments: { results: newCommentsArr },
+      activity: {
+        ...activity,
+        total_comments: recalculatedTotal,
+        total_parent_comments: recalculatedParents
+      }
+    });
+
+    // For parent deletions, update loaded count
+    if (baseLevel === 0) setTotalParentCommentsLoaded(prev => prev - 1);
+
+  })
+  .catch(err => {
+    console.log(err);
+    toast.error("Failed to delete comment.");
+  });
+};
+
 
     const hideReplies = () =>{
         commentData.isReplyLoaded = false;
